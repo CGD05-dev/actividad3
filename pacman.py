@@ -134,28 +134,42 @@ def move():
         if valid(point + course):
             point.move(course)
         else:
+            
             options = [
                 vector(5, 0),
                 vector(-5, 0),
-                vector(0, 5),
-                vector(0, -5),
+                vector(0, 5),   
+                vector(0, -5),  
             ]
-            plan = choice(options)
-            course.x = plan.x
-            course.y = plan.y
+          
+            best_option = None
+            min_distance = float('inf')
+
+            for option in options:
+                if valid(point + option):
+                    new_position = point + option
+                    distance = abs(pacman - new_position)
+                    if distance < min_distance:
+                        min_distance = distance
+                        best_option = option
+            if best_option:
+                course.x = best_option.x
+                course.y = best_option.y
+            else:
+                plan = choice(options)
+                course.x = plan.x
+                course.y = plan.y
 
         up()
         goto(point.x + 10, point.y + 10)
         dot(20, 'red')
 
     update()
-
     for point, course in ghosts:
         if abs(pacman - point) < 20:
             return
 
     ontimer(move, 100)
-
 
 def change(x, y):
     """Change pacman aim if valid."""
